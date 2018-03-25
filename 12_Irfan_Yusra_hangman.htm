@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <body>
+        <!--drawing a canvas -->
+        <canvas id="myCanvas" width="700" height="300" style="border:1px solid #11111;">
+        </canvas>
+        <h4>INPUT CHARACTER </h4>
+        <!--Textfield-->
+        <input id="textinput" type="text">
+        <!--Button-->
+        <button onclick="myFunction()"> OK </button>
+        <script language="javascript" type="text/javascript"> 
+        //checks if the user inputs 'enter'
+            document.onkeypress = function(e)
+            {
+                e = e || window.event;
+                if (e.keyCode == 13) myFunction();
+            }
+            var c = document.getElementById("myCanvas"); //canvas
+            var ctx = c.getContext("2d");//graphics
+            var words = ["incident", "slaughter", "lynx", "puppy","orthonganal", "window" , "calculus", "intersection", "computer", "engineeering"];//words to guess
+            var inputChar=" ";//character input from the keyboard
+            var wordNum = Math.floor((Math.random() * 10) + 0); // Random number to choose a word
+            var wordPlaying = words[wordNum];
+            var wordsLength = wordPlaying.length;
+            var x2=5;//x-position of wrong alphabets
+            var y2=190;//y-position of wrong alphabets
+            var arrayAlpha=[" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "];//array for alphabets
+            var arrayAlphaLength=arrayAlpha.length; 
+            var alphaExists=false;//alphabet exists in the array of Alphabets
+            var text="Input OK";//Input Validity
+            var charExists = false;//Character exists in the word
+            var lives = 6;   //numeber of lives
+            var x=5;//x-position of unknown characters
+            var correctChar=0;
+            var game=true;//game playing
+            ctx.font = "50px Arial";//changing font
+            ctx.fillText("HANGMAN",70,50);
+            ctx.font = "20px Arial";//changing font
+            ctx.fillText("Guess the word, you have "+ lives + " tries",5,90);
+                      
+            for (var i = 0; i < wordPlaying.length; i ++ )
+            {
+               ctx.fillText(" _ ",x,150);
+               x=x+30;
+            }
+            function myFunction() 
+            {
+                if (game)
+                {
+                    alphaExists=false;
+                    charExists=false;
+                    // Get the value of the input field with id="textinput"
+                    inputChar = document.getElementById("textinput").value;
+                    if (inputChar.length>1)//if the input length is more than 1
+                        text = "Input Not Valid";
+                    else if (!(isNaN(inputChar) || inputChar < 1 || inputChar > 10)) //if the character is a number
+                       text = "Input Not Valid";
+                    else      
+                       text = "Input Ok";
+                    if (text === "Input Ok" )//if the input is valid
+                    {   
+                        inputChar=inputChar.toLowerCase();
+                        for (var g = 0; g < arrayAlphaLength; g++ )//going through the alphabet and comparing it to the input
+                        {
+                            if (arrayAlpha[g]===inputChar)
+                                alphaExists=true;
+                        }
+                        if (alphaExists===false)
+                        {
+                            for (var g = 0; g < arrayAlphaLength; g++ )//going through the alphabet and comparing it to the input
+                            {
+                                if (arrayAlpha[g]===" ")
+                                {
+                                    arrayAlpha[g]=inputChar;
+                                    for (var k = 0; k < wordsLength; k ++ )//going through the word
+                                    {
+                                        if (inputChar===wordPlaying.charAt(k))//checking if the character exists in the word
+                                        {
+                                            charExists = true;                                           
+                                            var x3=10;//x-postion of characters that exist
+                                            for (var j = 0; j < wordsLength; j ++ )
+                                            {
+                                                if (j===k)//if the character postion matches 
+                                                {
+                                                    ctx.fillText(inputChar,x3,150); 
+                                                    correctChar++;  //increases the correct character count 
+                                                }
+                                                x3=x3+30;//increases x-position  
+                                            }                                 
+                                        }   
+                                    }              
+                                    if (charExists===false)//if the character does not exist
+                                    {
+                                        lives--;//decreases 1 life
+                                        ctx.fillText(inputChar,x2,y2);
+                                        x2=x2+30;                               
+                                        if (x2 >380)
+                                        {
+                                            x2=10;
+                                            y2=y2+30;           
+                                        }
+                                    }
+                                    document.getElementById("textinput").value = "";
+                                    
+                                    break;
+                                }      
+                            }
+                        } 
+                    } 
+                    if (lives<=5)
+                    {
+                    //Draws the face
+                        ctx.beginPath();
+                        ctx.arc(451,105,30,0,2*Math.PI);
+                        ctx.stroke();
+                    }  
+                    if (lives<=4)
+                    {
+                        //Draws the body
+                        ctx.moveTo(451,135);
+                        ctx.lineTo(451,250);
+                        ctx.stroke();
+                    }  
+                   
+                    if (lives<=3)
+                    {
+                    //Draws both arms
+                        ctx.moveTo(451,160);
+                        ctx.lineTo(480,190);
+                        ctx.stroke();
+                        
+                        ctx.moveTo(451,160);
+                        ctx.lineTo(420,190);
+                        ctx.stroke();
+                    }  
+                    if (lives<=2)
+                    {
+                    //Draws both legs
+                        ctx.moveTo(451,250);
+                        ctx.lineTo(430,280);
+                        ctx.stroke();
+                        
+                        ctx.moveTo(451,250);
+                        ctx.lineTo(480,280);
+                        ctx.stroke();
+                    }  
+                    if (lives<=1)
+                    {
+                    //Draws eyes
+                        ctx.moveTo(436,95);
+                        ctx.lineTo(443,105);
+                        ctx.stroke();
+                        
+                        ctx.moveTo(443,95);
+                        ctx.lineTo(436,105);
+                        ctx.stroke();
+                          
+                        ctx.moveTo(456,95);
+                        ctx.lineTo(463,105);
+                        ctx.stroke();
+                        
+                        ctx.moveTo(463,95);
+                        ctx.lineTo(456,105);
+                        ctx.stroke();  
+                    }                  
+                    if (lives<=0)
+                    {
+                    //Draws sad face
+                        ctx.beginPath();
+                        ctx.arc(451,125,8,Math.PI,0);
+                        ctx.stroke();
+                    }     
+                }
+                // Fill with gradient
+                if (correctChar===wordsLength)
+                {
+                    ctx.font = "50px Arial";//changing font
+                    ctx.fillStyle = 'red';
+                    ctx.fillText("YOU WON",90,250);
+                    game=false;
+                }
+                if (lives==0)
+                {
+                    ctx.font = "50px Arial";//changing font
+                    ctx.fillStyle = 'red';
+                    ctx.fillText("GAME OVER",70,250);
+                    ctx.font = "30px Arial";//changing font
+                    ctx.fillText(wordPlaying,190,280);                    
+                    game=false;
+                }                     
+            } 
+            if (lives<=6)
+            {
+            //Draws the pole
+                ctx.moveTo(400,50);
+                ctx.lineTo(400,300);
+                ctx.stroke();
+        
+                ctx.moveTo(350,300);
+                ctx.lineTo(450,300);
+                ctx.stroke();
+                
+                ctx.moveTo(400,50);
+                ctx.lineTo(450,50);
+                ctx.stroke();
+                
+                ctx.moveTo(450,50);
+                ctx.lineTo(450,75);
+                ctx.stroke();
+            }      
+        </script>
+    </body>
+</html>
